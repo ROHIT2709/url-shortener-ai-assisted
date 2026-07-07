@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: urlshortener-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-urlshortener}
+      POSTGRES_USER: ${POSTGRES_USER:-urlshortener}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      # $$ defers expansion to the container shell, where these env vars are set
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  app:
+    build: .
+    container_name: urlshortener-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # These names match the ${VAR:default} placeholders in application.properties
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-urlshortener}
+      DB_DRIVER: org.postgresql.Driver
+      DB_USERNAME: ${POSTGRES_USER:-urlshortener}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      DDL_AUTO: ${DDL_AUTO:-update}
+      H2_CONSOLE_ENABLED: "false"
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8080}
+      APP_DEFAULT_EXPIRY_DAYS: ${APP_DEFAULT_EXPIRY_DAYS:-30}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  pgdata:

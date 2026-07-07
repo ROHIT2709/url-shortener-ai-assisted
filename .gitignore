@@ -1,5 +1,8 @@
 HELP.md
 target/
+
+### Environment (real credentials live here — only .env.example is committed) ###
+.env
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

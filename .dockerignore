@@ -1,0 +1,25 @@
+# Build output — the image builds from source, never from a host-built jar
+target/
+
+# VCS / IDE
+.git/
+.gitignore
+.gitattributes
+.idea/
+*.iml
+.vscode/
+
+# Maven wrapper (the build stage uses the Maven base image)
+.mvn/
+mvnw
+mvnw.cmd
+
+# Docs
+*.md
+
+# Secrets and Docker's own files — never bake these into the image
+.env
+.env.*
+Dockerfile
+docker-compose.yml
+.dockerignore
