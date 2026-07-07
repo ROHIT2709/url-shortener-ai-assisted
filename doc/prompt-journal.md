@@ -220,3 +220,15 @@ Also done while waiting: `docker compose config` validated (syntax OK) and a git
 **Remark:** Accepted — doc folder now part of the repo; CI file confirmed in place.
 
 ---
+
+## Entry 17 — 2026-07-07, 13:57 IST
+
+**Prompt:** "update readme with all the steps endpoints"
+
+**Problem:** `README.md` contained only the repo title — no setup steps, no endpoint documentation. A reviewer cloning the repo had no guide to run or exercise the service.
+
+**Resolution:** Wrote a full README covering: project overview and design highlights (base62 over generated ID, 302-for-analytics rationale, two-layer URL validation, reserved paths); prerequisites; run steps for all three modes (local Maven/H2, IntelliJ, Docker Compose/Postgres with `.env` setup); complete endpoint reference with request/response examples and status-code semantics (201/400 create, 302/404/410 redirect, 200/404 stats); documentation URLs (`/docs`, `/v3/api-docs`, `/h2`, `/actuator/health`); configuration/env-var table matching Entry 11's placeholders; test instructions (55 tests) and CI notes; project structure tree; and a pointer to `doc/prompt-journal.md` as the AI-assistance audit trail.
+
+**Remark:** Accepted — README now the single entry point for reviewers.
+
+---
